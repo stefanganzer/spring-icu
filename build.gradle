@@ -1,24 +1,38 @@
 plugins {
-    id 'java'
+    id 'java-library'
+    id 'io.spring.javaformat' version '0.0.42'
+    id 'jacoco'
 }
 
 group 'com.transferwise.com'
-version '0.2.3'
-sourceCompatibility = 1.8
+version '0.3.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation('org.springframework:spring-context:5.2.5.RELEASE') {
+    api('org.springframework:spring-context:6.1.10') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
-    implementation 'com.ibm.icu:icu4j:66.1'
-
+    api 'com.ibm.icu:icu4j:75.1'
+    dependencies {
+        testImplementation(platform("org.junit:junit-bom:5.10.3"))
+    }
     testImplementation 'org.thymeleaf:thymeleaf-spring5:3.0.11.RELEASE'
     testImplementation 'org.thymeleaf:thymeleaf:3.0.11.RELEASE'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+}
 
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+test {
+    useJUnitPlatform()
+}
+
+java {
+    sourceCompatibility = JavaLanguageVersion.of(17)
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.ADOPTIUM
+    }
 }
