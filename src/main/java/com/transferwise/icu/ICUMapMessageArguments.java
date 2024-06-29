@@ -1,39 +1,53 @@
 package com.transferwise.icu;
 
 import com.ibm.icu.text.MessageFormat;
-import org.springframework.lang.Nullable;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.springframework.lang.Nullable;
 
-/**
- * Map-based arguments implementation. Used with patterns which have named arguments
- */
+/** Map-based arguments implementation. Used with patterns which have named arguments */
 public class ICUMapMessageArguments implements ICUMessageArguments {
 
-    Map<String, Object> args;
+	private static final ICUMapMessageArguments EMPTY = new ICUMapMessageArguments();
 
-    public ICUMapMessageArguments(@Nullable Map<String, Object> args) {
-        if (args == null) args = Collections.emptyMap();
-        this.args = args;
-    }
+	private final Map<String, Object> args;
 
-    @Override
-    public boolean isEmpty() {
-        return args.isEmpty();
-    }
+	private ICUMapMessageArguments() {
+		this.args = Map.of();
+	}
 
-    @Override
-    public ICUMapMessageArguments transform(Transformation transformation) {
-        Map<String, Object> newArgs = new LinkedHashMap<String, Object>(args.size());
-        for (Map.Entry<String, Object> item: args.entrySet())
-            newArgs.put(item.getKey(), transformation.transform(item.getValue()));
-        return new ICUMapMessageArguments(newArgs);
-    }
+	public ICUMapMessageArguments(@Nullable Map<String, Object> args) {
+		this.args = args == null || args.isEmpty() ? Map.of() : new LinkedHashMap<>(args);
+	}
 
-    @Override
-    public String formatWith(MessageFormat messageFormat) {
-        return messageFormat.format(args);
-    }
+	public static ICUMapMessageArguments of() {
+		return EMPTY;
+	}
+
+	public static ICUMapMessageArguments of(@Nullable Map<String, Object> args) {
+		if (args == null || args.isEmpty()) {
+			return EMPTY;
+		}
+		return new ICUMapMessageArguments(args);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return args.isEmpty();
+	}
+
+	@Override
+	public ICUMapMessageArguments transform(Transformation transformation) {
+		Map<String, Object> newArgs = new LinkedHashMap<>(args.size(), 1);
+		for (Map.Entry<String, Object> item : args.entrySet())
+			newArgs.put(item.getKey(), transformation.transform(item.getValue()));
+		return new ICUMapMessageArguments(newArgs);
+	}
+
+	@Override
+	public String formatWith(MessageFormat messageFormat) {
+		return messageFormat.format(args);
+	}
+
 }

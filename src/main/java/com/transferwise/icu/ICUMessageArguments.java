@@ -7,13 +7,16 @@ import com.ibm.icu.text.MessageFormat;
  */
 public interface ICUMessageArguments {
 
-    ICUMessageArguments transform(Transformation transformation);
+	ICUMessageArguments transform(Transformation transformation);
 
-    boolean isEmpty();
+	boolean isEmpty();
 
-    String formatWith(MessageFormat messageFormat);
+	String formatWith(MessageFormat messageFormat);
 
-    interface Transformation {
-        Object transform(Object item);
-    }
+	interface Transformation {
+
+		Object transform(Object item);
+
+	}
+
 }
