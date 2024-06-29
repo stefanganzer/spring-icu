@@ -19,7 +19,7 @@ dependencies {
     dependencies {
         testImplementation(platform("org.junit:junit-bom:5.10.3"))
     }
-    testImplementation 'org.thymeleaf:thymeleaf-spring5:3.0.11.RELEASE'
+    testImplementation 'org.thymeleaf:thymeleaf-spring5:3.0.13.RELEASE'
     testImplementation 'org.thymeleaf:thymeleaf:3.0.11.RELEASE'
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
