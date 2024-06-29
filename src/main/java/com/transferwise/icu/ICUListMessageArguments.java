@@ -9,41 +9,61 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Default, List-based arguments implementation. Used with patterns which have numbered arguments
+ * Default, List-based arguments implementation. Used with patterns which have numbered
+ * arguments
  */
 public class ICUListMessageArguments implements ICUMessageArguments {
 
-    private List<Object> args;
+	private static final ICUListMessageArguments EMPTY = new ICUListMessageArguments();
 
-    public ICUListMessageArguments(@Nullable List<Object> args) {
-        if (args == null) args = Collections.emptyList();
-        this.args = args;
-    }
+	private final List<Object> args;
 
-    public ICUListMessageArguments(@Nullable Object[] args) {
-        if (args == null) args = new Object[0];
-        this.args = Arrays.asList(args);
-    }
+	private ICUListMessageArguments() {
+		this.args = List.of();
+	}
 
-    @Override
-    public boolean isEmpty() {
-        return args.isEmpty();
-    }
+	public ICUListMessageArguments(@Nullable List<Object> args) {
+		this.args = args == null || args.isEmpty() ? List.of() : new ArrayList<>(args);
+	}
 
-    @Override
-    public ICUListMessageArguments transform(Transformation transformation) {
-        List<Object> newArgs = new ArrayList<Object>(args.size());
-        for (Object item : args)
-            newArgs.add(transformation.transform(item));
-        return new ICUListMessageArguments(newArgs);
-    }
+	public ICUListMessageArguments(@Nullable Object[] args) {
+		this(args == null ? null : Arrays.asList(args));
+	}
 
-    @Override
-    public String formatWith(MessageFormat messageFormat) {
-        return messageFormat.format(toArray());
-    }
+	public static ICUMessageArguments of(@Nullable Object[] args) {
+		if (args == null || args.length == 0) {
+			return EMPTY;
+		}
+		return new ICUListMessageArguments(args);
+	}
 
-    public Object[] toArray() {
-        return args.toArray(new Object[args.size()]);
-    }
+	public static ICUMessageArguments of(@Nullable List<Object> args) {
+		if (args == null || args.isEmpty()) {
+			return EMPTY;
+		}
+		return new ICUListMessageArguments(args);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return args.isEmpty();
+	}
+
+	@Override
+	public ICUListMessageArguments transform(Transformation transformation) {
+		List<Object> newArgs = new ArrayList<>(args.size());
+		for (Object item : args)
+			newArgs.add(transformation.transform(item));
+		return new ICUListMessageArguments(newArgs);
+	}
+
+	@Override
+	public String formatWith(MessageFormat messageFormat) {
+		return messageFormat.format(toArray());
+	}
+
+	public Object[] toArray() {
+		return args.toArray(new Object[0]);
+	}
+
 }
