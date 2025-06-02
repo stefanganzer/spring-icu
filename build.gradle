@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    api('org.springframework:spring-context:6.1.10') {
+    api('org.springframework:spring-context:6.1.20') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
     api 'com.ibm.icu:icu4j:75.1'
